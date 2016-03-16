@@ -185,9 +185,12 @@ public class CarManager {
         carCache = provider.getCacheContainer().getCache(CAR_CACHE_NAME);
 
         // initialize search results
-        // TODO rewrite using Distributed Streams
-        // Hints: map(), filter(), collect()
-        searchResults = Collections.EMPTY_LIST;
+        searchResults = carCache.entrySet().stream()
+           .map(e -> (Car) e.getValue())
+           .filter(c -> (car.getBrand().isEmpty() ? false : c.getBrand().toLowerCase().contains(car.getBrand().toLowerCase()))
+              || (car.getColor().isEmpty() ? false : c.getColor().toLowerCase().contains(car.getColor().toLowerCase()))
+              || c.getCountry().equals(car.getCountry()))
+           .collect(Collectors.toList());
 
         return "searchresults";
     }
